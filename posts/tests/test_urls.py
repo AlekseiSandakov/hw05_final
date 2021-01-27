@@ -64,8 +64,7 @@ class StaticURLTests(TestCase):
             'index.html': INDEX_URL,
             'group.html': GROUP_URL,
             'new.html': NEW_URL,
-            'new.html': self.EDIT_AUTHOR,
-        }
+            }
         for template, reverse_name in templates_url_names.items():
             with self.subTest():
                 response = self.authorized_client_VasiaBasov.get(reverse_name)
