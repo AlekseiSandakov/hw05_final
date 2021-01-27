@@ -166,24 +166,6 @@ class PagesTests(TestCase):
         response = self.guest_client.get(SERVER_ERROR_URL)
         self.assertEqual(response.status_code, 500)
 
-    def test_cache(self):
-        """Проверка кэширования"""
-        cache.clear()
-        home = self.client.get(INDEX_URL)
-        post_cache = Post.objects.create(
-            text='test post',
-            author=self.user,
-        )
-        self.assertEqual(
-            home.content,
-            self.client.get(INDEX_URL).content
-        )
-        cache.clear()
-        self.assertNotEqual(
-            home.content,
-            self.client.get(INDEX_URL).content
-        )
-
     def test_user_user_can_subscribe_and_delete(self):
         """Проверка подписки и отписки от автора постов"""
         self.authorized_client_user.get(reverse(
