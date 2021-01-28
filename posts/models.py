@@ -40,7 +40,7 @@ class Post(models.Model):
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name="posts",
+        related_name='posts',
         help_text='Автор поста',
     )
     group = models.ForeignKey(
@@ -49,7 +49,7 @@ class Post(models.Model):
         on_delete=models.SET_NULL,
         blank=True,
         null=True,
-        related_name="group",
+        related_name='group',
         help_text='Название группы',
     )
     image = models.ImageField(upload_to='posts/', blank=True, null=True,
@@ -67,15 +67,15 @@ class Post(models.Model):
 class Comment(models.Model):
     post = models.ForeignKey(
         Post,
-        verbose_name="Публикация",
+        verbose_name='Публикация',
         on_delete=models.CASCADE,
-        related_name="post",
+        related_name='post',
     )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name="author",
+        related_name='author',
         help_text='Автор поста',
     )
     text = models.TextField(
@@ -94,7 +94,7 @@ class Follow(models.Model):
         User,
         verbose_name='Пользователь',
         on_delete=models.CASCADE,
-        related_name="follower",
+        related_name='follower',
         help_text='Пользователь',
         null=True,
     )
@@ -102,7 +102,7 @@ class Follow(models.Model):
         User,
         verbose_name='Автор',
         on_delete=models.CASCADE,
-        related_name="following",
+        related_name='following',
         help_text='Автор поста',
         null=True,
     )

@@ -4,9 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Post, Group, User, Comment, Follow
 from .forms import PostForm, CommentForm
-
-
-PGR = 10
+from .constants import *
 
 
 def index(request):
@@ -18,7 +16,7 @@ def index(request):
         'page': page,
         'paginator': paginator,
     }
-    return render(request, "index.html", context)
+    return render(request, 'index.html', context)
 
 
 def group_posts(request, slug):
@@ -28,12 +26,12 @@ def group_posts(request, slug):
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
-        "group": group,
-        "posts": posts,
+        'group': group,
+        'posts': posts,
         'page': page,
         'paginator': paginator,
     }
-    return render(request, "group.html", context)
+    return render(request, 'group.html', context)
 
 
 @login_required
@@ -67,7 +65,7 @@ def profile(request, username):
 
 def post_view(request, username, post_id):
     author = get_object_or_404(User, username=username)
-    text = Post._meta.get_field("text")
+    text = Post._meta.get_field('text')
     post = get_object_or_404(Post, id=post_id, author=author)
     count = Post.objects.filter(author=author).select_related('author').count()
     comments = Comment.objects.filter(post_id=post_id)
@@ -106,16 +104,16 @@ def add_comment(request, username, post_id):
     post = get_object_or_404(Post, id=post_id, author__username=username)
     form = CommentForm(request.POST or None)
     context = {
-        "post": post,
-        "form": form,
+        'post': post,
+        'form': form,
     }
     if not form.is_valid():
-        return render(request, "post.html", context)
+        return render(request, 'post.html', context)
     comment = form.save(commit=False)
     comment.author = request.user
     comment.post = post
     form.save()
-    return redirect("post", username=username, post_id=post_id)
+    return redirect('post', username=username, post_id=post_id)
 
 
 @login_required
@@ -137,7 +135,7 @@ def profile_follow(request, username):
             user=user,
             author=author,
         )
-    return redirect("profile", username=username)
+    return redirect('profile', username=username)
 
 
 @login_required
@@ -150,11 +148,11 @@ def profile_unfollow(request, username):
 def page_not_found(request, exception=None):
     return render(
         request,
-        "misc/404.html",
-        {"path": request.path},
+        'misc/404.html',
+        {'path': request.path},
         status=404
     )
 
 
 def server_error(request):
-    return render(request, "misc/500.html", status=500)
+    return render(request, 'misc/500.html', status=500)

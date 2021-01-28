@@ -3,10 +3,7 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Group, Post, User
-
-
-NEW_URL = reverse('new_post')
-INDEX_URL = reverse('index')
+from .constants import *
 
 
 class CreateFormTests(TestCase):
@@ -15,13 +12,13 @@ class CreateFormTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='VasiaBasov')
         cls.group = Group.objects.create(
-            title='Тестовый заголовок',
-            slug='test',
-            description='Описание тестовой группы',
+            title=TITLE,
+            slug=SLUG,
+            description=DESCRIPTION,
         )
         cls.post = Post.objects.create(
-            text='Тестовый тест',
-            pub_date='06.01.2021',
+            text=TEXT,
+            pub_date=PUB_DATE,
             author=cls.user,
             group=cls.group,
         )
@@ -65,16 +62,9 @@ class CreateFormTests(TestCase):
 
     def test_create_post(self):
         """Валидная форма создает post."""
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00'
-            b'\x01\x00\x00\x00\x00\x21\xf9\x04'
-            b'\x01\x0a\x00\x01\x00\x2c\x00\x00'
-            b'\x00\x00\x01\x00\x01\x00\x00\x02'
-            b'\x02\x4c\x01\x00\x3b'
-        )
         uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=small_gif,
+            content=SMALL_GIF,
             content_type='image/gif'
         )
         form_data = {
@@ -82,12 +72,12 @@ class CreateFormTests(TestCase):
             'group': self.group.id,
             'image': uploaded,
         }
-        self.assertEqual(Post.objects.count(), 1)
+        quantity_post = Post.objects.count()
         response = self.authorized_client.post(NEW_URL,
                                                data=form_data,
                                                follow=True)
+        self.assertEqual(Post.objects.count(), quantity_post+1)
         self.assertRedirects(response, INDEX_URL)
-        self.assertEqual(Post.objects.count(), 2)
         post_new = Post.objects.exclude(id=self.post.id)[0]
         self.assertEqual(post_new.text, form_data['text'])
         self.assertEqual(post_new.group.id, form_data['group'])

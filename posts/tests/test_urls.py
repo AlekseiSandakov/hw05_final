@@ -3,12 +3,7 @@ from django.urls import reverse
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User
-
-
-INDEX_URL = reverse('index')
-NEW_URL = reverse('new_post')
-SLUG = 'test'
-GROUP_URL = reverse('group', args=[SLUG])
+from .constants import *
 
 
 class StaticURLTests(TestCase):
@@ -18,13 +13,13 @@ class StaticURLTests(TestCase):
         cls.user_author = User.objects.create_user(username='VasiaBasov')
         cls.user_other = User.objects.create_user(username='PetrBasov')
         cls.group = Group.objects.create(
-            title='Тестовый заголовок',
-            slug='test',
-            description='Описание тестовой группы',
+            title=TITLE,
+            slug=SLUG,
+            description=DESCRIPTION,
         )
         cls.post = Post.objects.create(
-            text='Тестовый тест',
-            pub_date='06.01.2021',
+            text=TEXT,
+            pub_date=PUB_DATE,
             author=cls.user_author,
             group=cls.group,
         )
@@ -87,7 +82,7 @@ class StaticURLTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_auth_author_user_page_edit(self):
-        """Автору поста доступно редактирование поста"""
+        """Автору поста доступно редактирование поста."""
         response = self.authorized_client_VasiaBasov.get(self.EDIT_AUTHOR)
         self.assertEqual(response.status_code, 200)
 

@@ -5,14 +5,7 @@ from django import forms
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User, Comment, Follow
-
-
-INDEX_URL = reverse('index')
-NEW_URL = reverse('new_post')
-AUTHOR_URL = reverse('about:author')
-TECH_URL = reverse('about:tech')
-NOT_FOUND_URL = reverse('404')
-SERVER_ERROR_URL = reverse('500')
+from .constants import *
 
 
 class PagesTests(TestCase):
@@ -28,26 +21,26 @@ class PagesTests(TestCase):
         cls.authorized_client_user_other.force_login(cls.user_other)
 
         cls.group = Group.objects.create(
-            title='Тестовый заголовок',
-            slug='test-slug',
-            description='Описание тестовой группы',
+            title=TITLE,
+            slug=SLUG,
+            description=DESCRIPTION,
         )
 
         cls.second_group = Group.objects.create(
-            title='Тестовый заголовок второй',
-            slug='second-slug',
-            description='Описание тестовой группы',
+            title=TITLE_2,
+            slug=SLUG_2,
+            description=DESCRIPTION_2,
         )
 
         cls.post = Post.objects.create(
-            text='Тестовый тест',
-            pub_date='06.01.2021',
+            text=TEXT,
+            pub_date=PUB_DATE,
             author=cls.user,
             group=cls.group,
         )
 
         cls.form = PostForm()
-        cls.GROUP_URL = reverse('group', kwargs={'slug': 'test-slug'})
+        cls.GROUP_URL = reverse('group', kwargs={'slug': 'test'})
         cls.SECOND_GROUP_URL = reverse('group',
                                        kwargs={'slug': 'second-slug'})
         cls.USER_URL = reverse('profile', args=(cls.user.username,))
@@ -91,7 +84,7 @@ class PagesTests(TestCase):
                          'Тестовый заголовок')
         self.assertEqual(response.context.get('group').description,
                          'Описание тестовой группы')
-        self.assertEqual(response.context.get('group').slug, 'test-slug')
+        self.assertEqual(response.context.get('group').slug, 'test')
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
@@ -116,26 +109,26 @@ class PagesTests(TestCase):
         self.assertEqual(post_group_0, 'Тестовый заголовок')
 
     def test_post_not_in_group(self):
-        """Тестовый пост не появился на странице second_group"""
+        """Тестовый пост не появился на странице second_group."""
         response = self.authorized_client_user.get(self.SECOND_GROUP_URL)
         self.assertEqual(len(response.context['page']), 0)
 
     def test_profile_page_show_correct_context(self):
-        """Шаблон profile сформирован с правильным контекстом"""
+        """Шаблон profile сформирован с правильным контекстом."""
         response = self.authorized_client_user.get(self.USER_URL)
         expected_post = self.post
         actual_post = response.context.get('page')[0]
         self.assertEqual(actual_post, expected_post)
 
     def test_post_page_show_correct_context(self):
-        """Шаблон post сформирован с правильным контекстом"""
+        """Шаблон post сформирован с правильным контекстом."""
         response = self.authorized_client_user.get(self.POST_URL)
         expected_post = self.post
         actual_post = response.context.get('post')
         self.assertEqual(actual_post, expected_post)
 
     def test_first_page_contains_ten_posts(self):
-        """Страница содержит 10 постов"""
+        """Страница содержит 10 постов."""
         for post in range(14):
             Post.objects.create(
                 text=f'Такст на 14 постов {post}',
@@ -166,7 +159,7 @@ class PagesTests(TestCase):
         self.assertEqual(response.status_code, 500)
 
     def test_user_user_can_subscribe_and_delete(self):
-        """Проверка подписки и отписки от автора постов"""
+        """Проверка подписки и отписки от автора постов."""
         self.authorized_client_user.get(reverse(
             'profile_follow', kwargs={'username': self.user_other}))
         self.authorized_client_user.get(
@@ -178,7 +171,7 @@ class PagesTests(TestCase):
         ).exists())
 
     def test_post_new_follow(self):
-        """Новая запись появляется в ленте"""
+        """Новая запись появляется в ленте."""
         Follow.objects.create(
             user=self.user_other,
             author=self.user,
@@ -186,11 +179,11 @@ class PagesTests(TestCase):
         response = self.authorized_client_user_other.get(
             reverse('follow_index')
         )
-        self.assertIn(self.post, response.context["page"])
+        self.assertIn(self.post, response.context['page'])
 
     def test_authorized_client_can_comment(self):
         """Комментарии авторизованного пользователя
-           отображаются в посте"""
+           отображаются в посте."""
         form_data = {'text': 'Коммент'}
         comments = Comment.objects.count()
         comment = Comment.objects.create(

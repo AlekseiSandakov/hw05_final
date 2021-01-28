@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load user_filters %}
-{% block title %} Новые записи {% endblock %}
+{% block title %}Новые записи{% endblock %}
     {% block header %} {% if is_edit %}Редактирование записи{% else %}Создание новой записи{% endif %} {% endblock %}
 {% block content %}
     <form method = 'POST' enctype="multipart/form-data">
@@ -18,7 +18,7 @@
     {% endfor %}
     <!-- <input type = "submit" value = "Отправить"> -->
     <!--<button type="submit" class="btn btn-primary"></button> -->
-        {% if is_edit %}
+        {% if post %}
             <input type = "submit" value = "Редактировать">
         {% else %}
             <input type = "submit" value = "Отправить">
