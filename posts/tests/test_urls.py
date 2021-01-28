@@ -3,7 +3,8 @@ from django.urls import reverse
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User
-from .constants import *
+from .constants import (TITLE, SLUG, DESCRIPTION, TEXT,
+                        PUB_DATE, NEW_URL, INDEX_URL, GROUP_URL)
 
 
 class StaticURLTests(TestCase):

@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from posts.models import Group, Post, User
-from .constants import *
+from .constants import (NEW_URL, INDEX_URL, TITLE, SLUG,
+                        DESCRIPTION, TEXT, PUB_DATE, SMALL_GIF)
 
 
 class CreateFormTests(TestCase):

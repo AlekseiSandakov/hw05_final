@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User
-from .constants import *
+from .constants import TITLE, SLUG, DESCRIPTION, TEXT, PUB_DATE
 
 
 class ModelTest(TestCase):

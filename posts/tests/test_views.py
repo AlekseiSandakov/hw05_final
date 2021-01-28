@@ -5,7 +5,9 @@ from django import forms
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User, Comment, Follow
-from .constants import *
+from .constants import (TITLE, SLUG, DESCRIPTION, TEXT, PUB_DATE, TITLE_2,
+                        SLUG_2, DESCRIPTION_2, NEW_URL, INDEX_URL, AUTHOR_URL,
+                        TECH_URL, NOT_FOUND_URL, SERVER_ERROR_URL)
 
 
 class PagesTests(TestCase):

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Post, Group, User, Comment, Follow
 from .forms import PostForm, CommentForm
-from .constants import *
+from .constants import PGR
 
 
 def index(request):
