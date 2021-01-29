@@ -5,9 +5,7 @@ from django import forms
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User, Comment, Follow
-from .constants import (TITLE, SLUG, DESCRIPTION, TEXT, PUB_DATE, TITLE_2,
-                        SLUG_2, DESCRIPTION_2, NEW_URL, INDEX_URL, AUTHOR_URL,
-                        TECH_URL, NOT_FOUND_URL, SERVER_ERROR_URL)
+from . import constants as c
 
 
 class PagesTests(TestCase):
@@ -23,20 +21,20 @@ class PagesTests(TestCase):
         cls.authorized_client_user_other.force_login(cls.user_other)
 
         cls.group = Group.objects.create(
-            title=TITLE,
-            slug=SLUG,
-            description=DESCRIPTION,
+            title=c.TITLE,
+            slug=c.SLUG,
+            description=c.DESCRIPTION,
         )
 
         cls.second_group = Group.objects.create(
-            title=TITLE_2,
-            slug=SLUG_2,
-            description=DESCRIPTION_2,
+            title=c.TITLE_2,
+            slug=c.SLUG_2,
+            description=c.DESCRIPTION_2,
         )
 
         cls.post = Post.objects.create(
-            text=TEXT,
-            pub_date=PUB_DATE,
+            text=c.TEXT,
+            pub_date=c.PUB_DATE,
             author=cls.user,
             group=cls.group,
         )
@@ -54,13 +52,13 @@ class PagesTests(TestCase):
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_page_names = {
-            'index.html': INDEX_URL,
-            'new.html': NEW_URL,
+            'index.html': c.INDEX_URL,
+            'new.html': c.NEW_URL,
             'group.html': self.GROUP_URL,
-            'about/author.html': AUTHOR_URL,
-            'about/tech.html': TECH_URL,
-            'misc/404.html': NOT_FOUND_URL,
-            'misc/500.html': SERVER_ERROR_URL,
+            'about/author.html': c.AUTHOR_URL,
+            'about/tech.html': c.TECH_URL,
+            'misc/404.html': c.NOT_FOUND_URL,
+            'misc/500.html': c.SERVER_ERROR_URL,
         }
         for template, reverse_name in templates_page_names.items():
             with self.subTest(template=template):
@@ -69,7 +67,7 @@ class PagesTests(TestCase):
 
     def test_new_post_page_show_correct_context(self):
         """Шаблон new_post сформирован с правильным контекстом."""
-        response = self.authorized_client_user.get(NEW_URL)
+        response = self.authorized_client_user.get(c.NEW_URL)
         form_fields = {
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
@@ -90,7 +88,7 @@ class PagesTests(TestCase):
 
     def test_index_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
-        response = self.authorized_client_user.get(INDEX_URL)
+        response = self.authorized_client_user.get(c.INDEX_URL)
         post_text_0 = response.context.get('page')[0].text
         post_author_0 = response.context.get('page')[0].author.username
         self.assertEqual(post_text_0, 'Тестовый тест')
@@ -99,7 +97,7 @@ class PagesTests(TestCase):
     def test_post_with_group_anailable_in_index_page(self):
         """Если при создании поста указать группу,
         то этот пост появляется на главной странице."""
-        response = self.authorized_client_user.get(INDEX_URL)
+        response = self.authorized_client_user.get(c.INDEX_URL)
         post_group_0 = response.context.get('page')[0].group.title
         self.assertEqual(post_group_0, 'Тестовый заголовок')
 
@@ -137,27 +135,27 @@ class PagesTests(TestCase):
                 author=get_user_model().objects.create(
                     username=f'Bloger{post}'),
             )
-        response = self.authorized_client_user.get(INDEX_URL)
+        response = self.authorized_client_user.get(c.INDEX_URL)
         self.assertEqual(len(response.context.get('page')), 10)
 
     def test_about_author_url_exists_at_desired_location(self):
         """Страница /author/ доступна любому пользователю."""
-        response = self.guest_client.get(AUTHOR_URL)
+        response = self.guest_client.get(c.AUTHOR_URL)
         self.assertEqual(response.status_code, 200)
 
     def test_about_tech_url_exists_at_desired_location(self):
         """Страница /tech/ доступна любому пользователю."""
-        response = self.guest_client.get(TECH_URL)
+        response = self.guest_client.get(c.TECH_URL)
         self.assertEqual(response.status_code, 200)
 
     def test_404_url_exists_at_desired_location(self):
         """Страница /404/ доступна любому пользователю."""
-        response = self.guest_client.get(NOT_FOUND_URL)
+        response = self.guest_client.get(c.NOT_FOUND_URL)
         self.assertEqual(response.status_code, 404)
 
     def test_500_url_exists_at_desired_location(self):
         """Страница /500/ доступна любому пользователю."""
-        response = self.guest_client.get(SERVER_ERROR_URL)
+        response = self.guest_client.get(c.SERVER_ERROR_URL)
         self.assertEqual(response.status_code, 500)
 
     def test_user_user_can_subscribe_and_delete(self):

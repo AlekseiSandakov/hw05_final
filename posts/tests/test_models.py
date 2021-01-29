@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 
 from posts.forms import PostForm
 from posts.models import Group, Post, User
-from .constants import TITLE, SLUG, DESCRIPTION, TEXT, PUB_DATE
+from . import constants as c
 
 
 class ModelTest(TestCase):
@@ -12,13 +12,13 @@ class ModelTest(TestCase):
         cls.user_author = User.objects.create_user(username='VasiaBasov')
         cls.user_other = User.objects.create_user(username='PetrBasov')
         cls.group = Group.objects.create(
-            title=TITLE,
-            slug=SLUG,
-            description=DESCRIPTION,
+            title=c.TITLE,
+            slug=c.SLUG,
+            description=c.DESCRIPTION,
         )
         cls.post = Post.objects.create(
-            text=TEXT,
-            pub_date=PUB_DATE,
+            text=c.TEXT,
+            pub_date=c.PUB_DATE,
             author=ModelTest.user_author,
             group=ModelTest.group,
         )

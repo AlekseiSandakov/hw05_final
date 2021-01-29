@@ -4,12 +4,12 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Post, Group, User, Comment, Follow
 from .forms import PostForm, CommentForm
-from .constants import PGR
+from . import constants as c
 
 
 def index(request):
     latest = Post.objects.all()
-    paginator = Paginator(latest, PGR)
+    paginator = Paginator(latest, c.PGR)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -22,7 +22,7 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     posts = Post.objects.filter(group=group).all()
-    paginator = Paginator(posts, PGR)
+    paginator = Paginator(posts, c.PGR)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     context = {
@@ -50,7 +50,7 @@ def new_post(request):
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
-    paginator = Paginator(post_list, PGR)
+    paginator = Paginator(post_list, c.PGR)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     following = (request.user.is_authenticated and request.user != author)
@@ -119,7 +119,7 @@ def add_comment(request, username, post_id):
 @login_required
 def follow_index(request):
     post_list = Post.objects.filter(author__following__user=request.user)
-    paginator = Paginator(post_list, 10)
+    paginator = Paginator(post_list, c.PGR)
     page_number = request.GET.get('page')
     page = paginator.get_page(page_number)
     return render(request, 'follow.html', {'page': page,
